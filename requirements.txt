@@ -1,0 +1,6 @@
+Flask
+ultralytics
+opencv-python
+torch
+torchvision
+torchaudio
