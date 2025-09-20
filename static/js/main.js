@@ -1,35 +1,46 @@
+// Keep track of the last known counts to detect changes
+let lastCounts = {};
+
 async function refreshStatus() {
   try {
     const res = await fetch("/status");
+    if (!res.ok) return;
     const data = await res.json();
+    const lanes = ["NS", "SN", "EW", "WE"];
 
-    // Update signals + vehicle counts
-    ["NS", "SN", "EW", "WE"].forEach(lane => {
+    lanes.forEach(lane => {
       const signal = document.getElementById(lane);
       const countEl = document.getElementById("count-" + lane);
+      const timerEl = document.getElementById("timer-" + lane); // NEW: Get timer element
 
-      // Green / Red logic
+      // Update signal color and timer display
       if (lane === data.green_lane) {
-        signal.style.backgroundColor = "green";
+          signal.style.backgroundColor = "limegreen";
+          // NEW: Update timer with remaining seconds
+          timerEl.innerText = `${data.time_remaining}s`;
       } else {
-        signal.style.backgroundColor = "red";
+          signal.style.backgroundColor = "red";
+          timerEl.innerText = ""; // NEW: Clear timer for red lights
       }
+      
+      const currentCount = data.vehicle_counts ? data.vehicle_counts[lane] : 0;
+      countEl.innerText = `(${currentCount} vehicles)`;
 
-      // Vehicle count update
-      if (data.vehicle_counts && data.vehicle_counts[lane] !== undefined) {
-        countEl.innerText = `(${data.vehicle_counts[lane]} vehicles)`;
+      // If the count for a lane has changed, refresh its image
+      if (lastCounts[lane] !== currentCount) {
+        const img = document.getElementById("img-" + lane);
+        img.src = `/processed_image/${lane}?t=${new Date().getTime()}`;
       }
     });
 
-    // Status summary
-    document.getElementById("status").innerText =
-      `Current green lane: ${data.green_lane} | Vehicle counts: ${JSON.stringify(data.vehicle_counts)}`;
+    // Store the new counts for the next comparison
+    lastCounts = data.vehicle_counts;
+
   } catch (err) {
     console.error("Error fetching status:", err);
   }
 }
 
-// Refresh every 2s
-setInterval(refreshStatus, 2000);
-refreshStatus(); // run immediately on load
-
+// Refresh status every second for a smoother timer
+setInterval(refreshStatus, 1000);
+window.onload = refreshStatus;

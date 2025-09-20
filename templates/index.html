@@ -9,61 +9,54 @@
   <h1>AI Traffic Management System</h1>
 
   <div class="intersection">
-    
     <div class="lane-container north">
       <h3>North (NS)</h3>
-      <div class="signal" id="NS"></div>
+      <div class="signal-box">
+          <div class="signal" id="NS"></div>
+          <div class="timer" id="timer-NS"></div> </div>
       <div class="count" id="count-NS">(0 vehicles)</div>
-      <img src="{{ url_for('video_feed', lane='NS') }}" alt="North Lane Feed">
+      <img id="img-NS" src="{{ url_for('processed_image', lane='NS') }}" alt="North Lane">
     </div>
 
     <div class="lane-container south">
       <h3>South (SN)</h3>
-      <div class="signal" id="SN"></div>
+      <div class="signal-box">
+        <div class="signal" id="SN"></div>
+        <div class="timer" id="timer-SN"></div> </div>
       <div class="count" id="count-SN">(0 vehicles)</div>
-      <img src="{{ url_for('video_feed', lane='SN') }}" alt="South Lane Feed">
+      <img id="img-SN" src="{{ url_for('processed_image', lane='SN') }}" alt="South Lane">
     </div>
     
     <div class="lane-container east">
       <h3>East (EW)</h3>
-      <div class="signal" id="EW"></div>
+      <div class="signal-box">
+        <div class="signal" id="EW"></div>
+        <div class="timer" id="timer-EW"></div> </div>
       <div class="count" id="count-EW">(0 vehicles)</div>
-      <img src="{{ url_for('video_feed', lane='EW') }}" alt="East Lane Feed">
+      <img id="img-EW" src="{{ url_for('processed_image', lane='EW') }}" alt="East Lane">
     </div>
 
     <div class="lane-container west">
       <h3>West (WE)</h3>
-      <div class="signal" id="WE"></div>
+      <div class="signal-box">
+        <div class="signal" id="WE"></div>
+        <div class="timer" id="timer-WE"></div> </div>
       <div class="count" id="count-WE">(0 vehicles)</div>
-      <img src="{{ url_for('video_feed', lane='WE') }}" alt="West Lane Feed">
+      <img id="img-WE" src="{{ url_for('processed_image', lane='WE') }}" alt="West Lane">
     </div>
   </div>
 
-  <h2>Upload Lane Videos</h2>
-  <div class="upload-forms">
-    <form action="/upload" method="post" enctype="multipart/form-data">
-      <label>NS Lane: <input type="file" name="video" accept="video/mp4"></label>
-      <input type="hidden" name="lane" value="NS">
-      <button type="submit">Upload</button>
-    </form>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-      <label>SN Lane: <input type="file" name="video" accept="video/mp4"></label>
-      <input type="hidden" name="lane" value="SN">
-      <button type="submit">Upload</button>
-    </form>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-      <label>EW Lane: <input type="file" name="video" accept="video/mp4"></label>
-      <input type="hidden" name="lane" value="EW">
-      <button type="submit">Upload</button>
-    </form>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-      <label>WE Lane: <input type="file" name="video" accept="video/mp4"></label>
-      <input type="hidden" name="lane" value="WE">
-      <button type="submit">Upload</button>
-    </form>
-  </div>
+  <h2>Upload Lane Images to Start</h2>
+  <form class="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+    <div class="form-inputs">
+        <label>North (NS): <input type="file" name="image_NS" accept="image/*" required></label>
+        <label>South (SN): <input type="file" name="image_SN" accept="image/*" required></label>
+        <label>East (EW): <input type="file" name="image_EW" accept="image/*" required></label>
+        <label>West (WE): <input type="file" name="image_WE" accept="image/*" required></label>
+    </div>
+    <button type="submit">Start Simulation</button>
+  </form>
   
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
-
